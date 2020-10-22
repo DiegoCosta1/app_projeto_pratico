@@ -1,0 +1,702 @@
+// flutter clean
+// flutter run --release -d chrome
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+
+void main(){
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Projeto Prático',
+      theme: ThemeData(
+        // Estilo de cores
+        brightness: Brightness.light,
+        primaryColor: Colors.yellow[600],
+        accentColor: Colors.red[800],
+
+        // Fonte padrão
+        fontFamily: 'OpenSans',
+
+        // Estilos de fonte
+        textTheme: TextTheme(
+          headline2: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+        ),
+      ),
+
+      // Navegação
+      initialRoute: '/telalogin',
+      routes: {
+        '/telalogin': (context) => TelaLogin(),
+        '/telaprincipal': (context) => TelaPrincipal(),
+        '/telacadastro': (context) => TelaCadastro(),
+        '/demo': (context) => TabBarDemo(),
+        '/demodrawer': (context) => MyHomePage(),
+      },
+    )
+  );
+}
+
+
+////
+////----- CLASSE PARA ARMAZENAR OS DADOS DO USUÁRIO
+////
+//class Usuario{
+  // Atributos
+//  var NomeUsuario = TextEditingController();
+//  var Senha = TextEditingController();
+//  var Email = TextEditingController();
+  ////var txtConfirmarSenha = TextEditingController(); --redundante
+
+  ////Construtor?
+  //Usuario(this.NomeUsuario, this.Senha, this.Email);
+//}
+
+
+
+
+
+//
+//----------------- TELA DE LOGIN
+//
+class TelaLogin extends StatefulWidget{
+  @override
+  _TelaLoginState createState() => _TelaLoginState();
+}
+
+class _TelaLoginState extends State<TelaLogin>{
+  // Declara chave que identifica unicamente o formulário
+  var formKey = GlobalKey<FormState>();
+
+  // Atributos que recebem os valores de entrada (não utilizados por enquanto...)
+  var txtNomeUsuario = TextEditingController();
+  var txtSenha = TextEditingController();
+  var txtEmail = TextEditingController();
+
+  @override 
+  Widget build(BuildContext context){
+    return Scaffold(
+      
+      body: Container(
+        padding: EdgeInsets.all(40),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+
+              // Logotipo
+
+
+              // 'formulario' de login
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+
+                  // Logotipo
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(200),
+                    child: Image.asset('images/logo.png', scale: 4.0, fit: BoxFit.fitWidth,),
+                  ),
+
+                  SizedBox(height: 15),
+
+                  // Título
+                  Text(
+                  'Entre na sua conta',
+                  style: TextStyle(
+                    fontFamily: 'OpenSans',
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold
+                    )
+                  ),
+
+                  SizedBox(height: 45),
+
+                  // Input - TextFormField
+                  campoTexto('Nome de Usuário', txtNomeUsuario, Icons.account_circle, false),
+                  campoTexto('Senha', txtSenha, Icons.lock_rounded, true),
+                  
+                  SizedBox(height: 15),
+
+                  // Esqueci a senha 'link'
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: RichText(
+                      text: TextSpan(
+                        text: 'Esqueci minha senha',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[800],
+                          decoration: TextDecoration.underline,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                        ..onTap = (){
+                          caixaEntrada('Digite seu e-mail'); // 'input box'
+                        }
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 60),
+
+                  Container(
+                    height: 50.0,
+                    child: RaisedButton(
+                      onPressed: (){
+                        Navigator.pushNamed(context, '/telaprincipal');
+                      },
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
+                      padding: EdgeInsets.all(0.0),
+                      child: Ink(
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(colors: [Colors.yellow[700], Colors.yellow[400]],
+                              begin: Alignment.topLeft,
+                              end: Alignment.topRight,
+                            ),
+                            borderRadius: BorderRadius.circular(30.0)
+                        ),
+                        child: Container(
+                          constraints: BoxConstraints(maxWidth: 300.0, minHeight: 50.0),
+                          alignment: Alignment.center,
+                          child: Text(
+                            "Entrar",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ]
+              ),
+
+              SizedBox(height: 30),
+
+              // 'link' para realizar cadastro
+              Center(
+                child: RichText(
+                  text: TextSpan(
+                    text: 'Não possui uma conta? Cadastre-se aqui',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[800],
+                      decoration: TextDecoration.underline,
+                    ),
+                    recognizer: TapGestureRecognizer()
+
+                    // Navegue para tela de cadastro
+                    ..onTap = (){ 
+                      Navigator.pushNamed(context, '/telacadastro');
+                    }
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // WIDGETS E MÉTODOS
+  Widget campoTexto(rotulo, controle, icone, oculto){
+    
+    return ListTile(
+      leading: Icon(icone, color: Colors.grey[800]),
+      title: TextFormField(
+        obscureText: oculto,
+        controller: controle,
+        cursorColor: Theme.of(context).primaryColor,        
+        decoration: InputDecoration(
+          hintText: rotulo,
+          contentPadding: EdgeInsets.only(left: 5)
+        ), 
+
+        //Validação do valor fornecedido
+        validator: (value){
+        return (value.isEmpty) ? "Informe o valor" : null;
+        },
+      ),
+    );
+  }
+
+  caixaDialogo(msg){
+    return showDialog(
+      context: context,
+      builder: (BuildContext context){
+        return AlertDialog(
+          title: Text('Título',style:TextStyle(fontSize: 12)),
+          content: Text(msg, style:TextStyle(fontSize: 18)),
+          actions: [
+            FlatButton(
+              onPressed: (){
+                Navigator.of(context).pop();
+              }, 
+              child: Text('fechar')
+            )
+          ],
+        );
+      }
+    );
+  }
+
+  caixaEntrada(msg){
+    return showDialog(
+      context: context,
+      builder: (BuildContext context){
+        return AlertDialog(
+          title: Text('Recuperação de senha', style:TextStyle(fontSize: 12)),
+          //content: Text('Informe seu email', style:TextStyle(fontSize: 18)),
+          content: Container(
+            height: 120,
+            child: ListView(
+              children: [
+                Text('Uma mensagem será enviada em seu e-mail para redefinir sua senha.', style:TextStyle(fontSize: 15)),
+                SizedBox(height: 10),
+                campoTexto('E-mail', txtEmail, Icons.email_rounded, false)
+              ]
+            ),
+          ),
+          actions: [
+            FlatButton(
+              onPressed: (){
+                Navigator.of(context).pop();
+              }, 
+              child: Text('Enviar', style:TextStyle(fontSize: 15)),
+            )
+          ],
+        );
+      }
+    );
+  }
+} // TelaLogin
+
+
+
+
+
+//
+//----------------- TELA DE CADASTRO
+//
+class TelaCadastro extends StatefulWidget{
+  @override
+  _TelaCadastroState createState() => _TelaCadastroState();
+}
+
+class _TelaCadastroState extends State<TelaCadastro>{
+
+  // Declara chave que identifica unicamente o formulário
+  var formKey = GlobalKey<FormState>();
+
+  // Atributos para armazenar valores de entrada (não utilizados por enquanto...)
+  var txtNomeUsuario = TextEditingController();
+  var txtEmail = TextEditingController();
+  var txtSenha = TextEditingController();
+  var txtConfirmarSenha = TextEditingController();
+
+  @override 
+  Widget build(BuildContext context){
+    return Scaffold(
+      
+      // AppBar
+      appBar: AppBar(      
+        title: Text('Cadastro'),
+        centerTitle: true,      
+        actions: [],      
+      ),
+
+      body: Container(
+        padding: EdgeInsets.all(40),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+
+              // 'formulario' de login
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+
+                  // Título
+                  Text(
+                  'Crie sua conta',
+                  style: TextStyle(
+                    fontFamily: 'OpenSans',
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold
+                    )
+                  ),
+
+                  SizedBox(height: 45),
+
+                  // Input - TextFormField
+                  campoTexto('E-mail', txtEmail, Icons.email_rounded, false),
+                  campoTexto('Nome de Usuário', txtNomeUsuario, Icons.account_circle, false),
+                  campoTexto('Senha', txtSenha, Icons.lock_rounded, true),
+                  campoTexto('Confirme sua senha', txtConfirmarSenha, Icons.verified_user_rounded, true),
+                  
+                  SizedBox(height: 60),
+
+                  //RaisedButton(                  child: Text('Entrar'),                  onPressed: (){                    Navigator.pushNamed(context, '/telaprincipal');                  },                ),
+
+                  Container(
+                    height: 50.0,
+                    child: RaisedButton(
+                      onPressed: (){
+                        Navigator.pushNamed(context, '/telaprincipal');
+                      },
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
+                      padding: EdgeInsets.all(0.0),
+                      child: Ink(
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(colors: [Colors.yellow[700], Colors.yellow[400]],
+                              begin: Alignment.topLeft,
+                              end: Alignment.topRight,
+                            ),
+                            borderRadius: BorderRadius.circular(30.0)
+                        ),
+                        child: Container(
+                          constraints: BoxConstraints(maxWidth: 300.0, minHeight: 50.0),
+                          alignment: Alignment.center,
+                          child: Text(
+                            "Cadastrar",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ]
+              ),
+              
+              SizedBox(height: 30),
+
+              // 'link' realizar cadastro
+              Center(
+                child: RichText(
+                  text: TextSpan(
+                    text: 'Já possui uma conta? Entre aqui',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[800],
+                      decoration: TextDecoration.underline,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                    ..onTap = (){
+                      Navigator.pushNamed(context, '/telalogin');
+                    }
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget campoTexto(rotulo, controle, icone, oculto){
+
+    return ListTile(
+      leading: Icon(icone, color: Colors.grey[800]),
+      title: TextFormField(
+        obscureText: oculto,
+        controller: controle,
+        cursorColor: Theme.of(context).primaryColor,        
+        decoration: InputDecoration(
+          hintText: rotulo,
+          contentPadding: EdgeInsets.only(left: 5)
+        ), 
+
+// On changed
+//onChanged: (text){
+//if (controle == ''){
+//estado = Icons.error_outline;
+//corEstado = Colors.red[100];
+//}
+//},
+
+        //Validação do valor fornecedido
+        validator: (value){
+        return (value.isEmpty) ? "Informe o valor" : null;
+        },
+      ),
+    );
+  }
+
+  caixaDialogo(msg){
+    return showDialog(
+      context: context,
+      builder: (BuildContext context){
+        return AlertDialog(
+          title: Text('Triste',style:TextStyle(fontSize: 12)),
+          content: Text(msg, style:TextStyle(fontSize: 18)),
+          actions: [
+            FlatButton(
+              onPressed: (){
+                Navigator.of(context).pop();
+              }, 
+              child: Text('fechar')
+            )
+          ],
+        );
+      }
+    );
+  }
+  
+} // TelaCadastro
+
+
+
+
+
+//
+//----------------- TELA PRINCIPAL
+//
+class TelaPrincipal extends StatefulWidget{
+  @override
+  _TelaPrincipalState createState() => _TelaPrincipalState();
+}
+
+class _TelaPrincipalState extends State<TelaPrincipal>{
+
+  // Scaffold Key
+  //final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  @override
+  Widget build(BuildContext context){
+    return MaterialApp(
+      //appBar: AppBar(title: Text('Tela Principal'),),
+    
+      // Body com tab bar
+      home: new DefaultTabController(
+        
+        length: 3,
+        child: Scaffold(
+          appBar: AppBar(
+            bottom: TabBar(
+              tabs: [
+                Tab(text: 'FILMES', icon: Icon(Icons.movie_creation_outlined)),
+                Tab(text: 'JOGOS', icon: Icon(Icons.gamepad_rounded)),
+                Tab(text: 'LIVROS', icon: Icon(Icons.book_rounded)),
+                Tab(text: 'MÚSICAS', icon: Icon(Icons.music_note_rounded)),
+              ],
+            ),
+            title: Text('Categorias'),
+            backgroundColor: Theme.of(context).accentColor,
+            
+          ),
+          body: TabBarView(
+            children: [
+              //CategoriaFilmeGeral();
+              Icon(Icons.movie_creation_outlined),
+              //CategoriaJogoGeral();
+              Icon(Icons.directions_transit),
+              //LivroGeral();
+              Icon(Icons.gamepad_rounded),
+              //MusicaGeral();
+              Icon(Icons.directions_car),
+            ],
+          ),
+
+          drawer: new Drawer(
+            child: ListView(
+              padding: EdgeInsets.zero, //----Removendo qualquer espaçamento da listView
+              children: <Widget>[
+                DrawerHeader(
+                  child: Column(
+                    children: [
+                      Icon(Icons.account_circle, size: 80,),
+                      Text('nome_do_usuario', style: TextStyle(fontSize: 25)),
+                      Text('email_do_usuario@example.com', style: TextStyle(fontSize: 15)),
+                    ]
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+                ListTile(
+                  leading: Icon(Icons.movie_creation_outlined),
+                  title: Text('Tudo sobre Filmes'),
+                  onTap: () {
+
+                    // CategoriasFilme(); -- lista das telas...
+
+                    // ultima tela: EfetuarCompra(); -- recebe imagem, título, preço, etc.
+
+                    // Update the state of the app
+                    // ...
+                    // Then close the drawer
+                    //Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.gamepad_rounded),
+                  title: Text('Tudo sobre Jogos'),
+                  onTap: () {
+                    // Update the state of the app
+                    // ...
+                    // Then close the drawer
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.book_rounded),
+                  title: Text('Tudo sobre Livros'),
+                  onTap: () {
+                    // Update the state of the app
+                    // ...
+                    // Then close the drawer
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.music_note_rounded),
+                  title: Text('Tudo sobre Músicas'),
+                  onTap: () {
+                    // Update the state of the app
+                    // ...
+                    // Then close the drawer
+                    Navigator.pop(context);
+                  },
+                ),
+                //ListTile(
+                //  leading: Icon(Icons.help_outline_rounded),
+                //  title: Text('Ajuda'),
+                //  onTap: () {
+                ////////----- Esta funcionalidade ainda será desenvolvida....
+                //  },
+                //),
+                ListTile(
+                  leading: Icon(Icons.info_outline_rounded),
+                  title: Text('Sobre o Projeto'), // "Informações do projeto"
+                  onTap: () {
+                    // Update the state of the app
+                    // ...
+                    // Then close the drawer
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.settings_rounded),
+                  title: Text('Configurações da conta'),
+                  onTap: () {
+                    // Update the state of the app
+                    // ...
+                    // Then close the drawer
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.exit_to_app_rounded),
+                  title: Text('Sair'),
+                  onTap: () {
+                    // Update the state of the app
+                    // ...
+                    // Then close the drawer
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+          ),
+      
+        ),
+      ),
+    );
+  }
+} // TelaPrincipal
+
+
+
+
+
+//----------------- MODELOS
+class MyHomePage extends StatelessWidget {
+  final String title;
+
+  MyHomePage({Key key, this.title}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(title), backgroundColor: Theme.of(context).accentColor),
+
+      body: Center(child: Text('My Page!')),
+
+      drawer: Drawer(
+        // Add a ListView to the drawer. This ensures the user can scroll
+        // through the options in the drawer if there isn't enough vertical
+        // space to fit everything.
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: Text('Drawer Header'),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+            ),
+            ListTile(
+              title: Text('Item 1'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text('Item 2'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class TabBarDemo extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          appBar: AppBar(
+            bottom: TabBar(
+              tabs: [
+                Tab(icon: Icon(Icons.directions_car)),
+                Tab(icon: Icon(Icons.directions_transit)),
+                Tab(icon: Icon(Icons.directions_bike)),
+              ],
+            ),
+            title: Text('Tabs Demo'),
+          ),
+          body: TabBarView(
+            children: [
+              Icon(Icons.directions_car),
+              Icon(Icons.directions_transit),
+              Icon(Icons.directions_bike),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
