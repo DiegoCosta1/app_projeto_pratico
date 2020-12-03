@@ -1,6 +1,6 @@
 {
-    "name": "app_projeto",
-    "short_name": "app_projeto",
+    "name": "app_projeto_pratico",
+    "short_name": "app_projeto_pratico",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

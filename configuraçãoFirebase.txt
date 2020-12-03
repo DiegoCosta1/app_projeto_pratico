@@ -1,0 +1,88 @@
+---
+Criar novo projeto em: https://console.firebase.google.com/
+
+
+-- ADICIONAR O FIREBASE AO SEU APP ANDROID --
+
+1
+/android/app/src/main/AndroidManifest.xml
+Nome do Pacote Android: com.example.app_projeto_pratico
+
+2
+Fazer o download de google-services.json
+Mover o arquivo para: /android/app/
+
+3
+Configurando /android/build.gradle
+    buildscript {
+        repositories {
+            // Check that you have the following line (if not, add it):
+            google()  // Google's Maven repository
+        }
+
+        dependencies {
+            ...
+            // Add this line
+            classpath 'com.google.gms:google-services:4.3.4'
+        }
+    }
+
+    allprojects {
+        ...
+        repositories {
+            // Check that you have the following line (if not, add it):
+            google()  // Google's Maven repository
+            ...
+        }
+    }
+
+4
+Configurando /android/app/build.gradle
+    apply plugin: 'com.android.application'
+    // Add this line
+    apply plugin: 'com.google.gms.google-services'
+
+    dependencies {
+        // Import the Firebase BoM
+        implementation platform('com.google.firebase:firebase-bom:26.1.0')
+
+        // Add the dependencies for the desired Firebase products
+        // https://firebase.google.com/docs/android/setup#available-libraries
+        
+    }
+
+
+-- ADICIONAR UM APP DA WEB --
+
+1
+Configurar <body> de /web/index.html
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+
+    <script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+        apiKey: "AIzaSyAVfujMs0g6WtyoZ-nIUi1Mtm3phhdAu-o",
+        authDomain: "projeto-pratico-bb9a3.firebaseapp.com",
+        databaseURL: "https://projeto-pratico-bb9a3.firebaseio.com",
+        projectId: "projeto-pratico-bb9a3",
+        storageBucket: "projeto-pratico-bb9a3.appspot.com",
+        messagingSenderId: "445080493244",
+        appId: "1:445080493244:web:caba37002815da888ac4b9"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    </script>
+
+
+2
+Adicionar duas bibliotecas no projeto - configurar /pubspec.yaml
+firebase_core: ^0.5.2+1
+cloud_firestore: ^0.14.3+1
+
+// OU firebase_core: ^0.5.2
+
+// OU cloud_firestore: ^0.14.3

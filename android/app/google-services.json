@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "445080493244",
+    "firebase_url": "https://projeto-pratico-bb9a3.firebaseio.com",
+    "project_id": "projeto-pratico-bb9a3",
+    "storage_bucket": "projeto-pratico-bb9a3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:445080493244:android:9cf45abbbc9bcb4a8ac4b9",
+        "android_client_info": {
+          "package_name": "com.example.app_projeto_pratico"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "445080493244-ungi4usjknguphfvftdj5i4ho7ttlhch.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVBSvA9j6oGZv7AyqrarCq0eJZsxPp2PY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "445080493244-ungi4usjknguphfvftdj5i4ho7ttlhch.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
